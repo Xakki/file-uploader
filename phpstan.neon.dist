@@ -6,6 +6,4 @@ parameters:
         - src
     level: 6
     bootstrapFiles:
-        - vendor/autoload.php
-        - vendor/larastan/larastan/bootstrap.php
         - phpstan-bootstrap.php

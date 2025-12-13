@@ -21,6 +21,41 @@ foreach ([$defaultDiskPath, $filesDiskPath] as $path) {
     }
 }
 
+if (! \method_exists($container, 'configPath')) {
+    // Минимальный контейнер с методом configPath, чтобы phpstan/larastan не падали
+    $container = new class extends Container
+    {
+        protected function joinPath(string $root, string $path = ''): string
+        {
+            if ($path === '' || $path === null) {
+                return $root;
+            }
+
+            return $root.DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR);
+        }
+
+        // Base path (repo root where this file lives)
+        public function basePath(string $path = ''): string
+        {
+            $base = __DIR__;
+
+            return $this->joinPath($base, $path);
+        }
+
+        public function configPath(string $path = ''): string
+        {
+            return $this->joinPath($this->basePath('config'), $path);
+        }
+
+        public function databasePath(string $path = ''): string
+        {
+            return $this->joinPath($this->basePath('database'), $path);
+        }
+    };
+
+    Container::setInstance($container);
+}
+
 $container->instance('config', new Repository([
     'filesystems' => [
         'default' => 'local',

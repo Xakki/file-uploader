@@ -37,7 +37,7 @@ class UploadChunkRequest extends FormRequest
     ];
 
     /**
-     * @return array<string, array<int, \Illuminate\Contracts\Validation\ValidationRule|string>>
+     * @return mixed[]
      */
     public function rules(): array
     {
@@ -76,7 +76,11 @@ class UploadChunkRequest extends FormRequest
         return $this->cachedPayload;
     }
 
-    public function __get(mixed $key): mixed
+    /**
+     * @param  mixed  $key
+     * @return mixed
+     */
+    public function __get($key)
     {
         if (! is_string($key)) {
             return null;

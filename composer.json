@@ -1,15 +1,15 @@
 {
     "name": "xakki/laravel-file-uploader",
-    "version": "0.1",
-    "description": "Chunked file uploader package for Laravel 10+.",
+    "version": "0.2",
+    "description": "Chunked file uploader package for Laravel 10-12.",
     "type": "library",
     "license": "Apache-2.0",
     "require": {
-        "php": "^8.3",
-        "illuminate/support": "^10.0|^11.0",
-        "illuminate/filesystem": "^10.0|^11.0",
-        "illuminate/http": "^10.0|^11.0",
-        "illuminate/validation": "^10.0|^11.0"
+        "php": "^8.3|^8.4|^8.5",
+        "illuminate/support": "^10|^11|^12",
+        "illuminate/filesystem": "^10|^11|^12",
+        "illuminate/http": "^10|^11|^12",
+        "illuminate/validation": "^10|^11|^12"
     },
     "autoload": {
         "psr-4": {
@@ -31,16 +31,16 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require-dev": {
-        "orchestra/testbench": "^8.17",
-        "phpunit/phpunit": "^10.5",
-        "phpstan/phpstan": "^1.11",
-        "larastan/larastan": "^2.9",
-        "laravel/pint": "^1.14"
+        "orchestra/testbench": "*",
+        "phpunit/phpunit": "*",
+        "phpstan/phpstan": "*",
+        "larastan/larastan": "*",
+        "laravel/pint": "*"
     },
     "scripts": {
-        "phpunit": "vendor/bin/phpunit",
-        "cs-fix": "vendor/bin/pint",
-        "cs-check": "vendor/bin/pint --test",
-        "phpstan": "vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --memory-limit=512M"
+        "phpunit": "XDEBUG_MODE=off vendor/bin/phpunit",
+        "cs-fix": "XDEBUG_MODE=off vendor/bin/pint",
+        "cs-check": "XDEBUG_MODE=off vendor/bin/pint --test",
+        "phpstan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --memory-limit=512M -vvv"
     }
 }
