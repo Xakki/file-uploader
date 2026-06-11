@@ -54,11 +54,25 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, fileinfo
-          coverage: none
+          coverage: pcov
           tools: composer:v2
       - run: composer install --prefer-dist --no-progress --no-interaction
       - run: composer phpunit
       - run: composer phpstan
+      - name: PHP coverage (8.4 only)
+        if: matrix.php == '8.4'
+        run: composer phpunit-coverage
+      - name: Enforce 70% PHP coverage floor
+        if: matrix.php == '8.4'
+        run: |
+          # the project-summary <metrics> line is the only one carrying files="
+          metrics=$(grep -o '<metrics [^>]*files="[^>]*>' coverage.xml | tail -1)
+          # boundary before "statements" so it doesn't also match "coveredstatements"
+          total=$(echo "$metrics" | grep -oP '(?<![a-z])statements="\K[0-9]+')
+          covered=$(echo "$metrics" | grep -oP 'coveredstatements="\K[0-9]+')
+          pct=$(awk "BEGIN { if ($total>0) printf \"%.0f\", 100*$covered/$total; else print 0 }")
+          echo "PHP coverage: ${pct}% (${covered}/${total} statements)"
+          if [ "$pct" -lt 70 ]; then echo "FAIL: below 70% floor"; exit 1; fi
 
   pint:
     needs: changes
@@ -89,7 +103,7 @@ jobs:
         working-directory: js
       - run: npm run typecheck
         working-directory: js
-      - run: npm test
+      - run: npm run test:coverage
         working-directory: js
       - run: npm run build
         working-directory: js

@@ -1,0 +1,20 @@
+theme: jekyll-theme-cayman
+
+title: File Uploader
+description: "Universal chunked file uploader"
+
+exclude:
+  - vendor/
+  - src/
+  - tests/
+  - go/
+  - python/
+  - js/
+  - Makefile
+  - composer.json
+  - composer.lock
+  - phpstan.neon.dist
+  - phpunit.xml.dist
+  - pint.json
+  - CLAUDE.md
+  - .gitattributes

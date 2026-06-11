@@ -1,0 +1,22 @@
+* text=auto eol=lf
+
+# Keep the Composer dist lean: ship only src/, protocol/ (conformance fixtures
+# are read by bindings from vendor), composer.json, LICENSE and README.
+/tests              export-ignore
+/docs               export-ignore
+/js                 export-ignore
+/go                 export-ignore
+/python             export-ignore
+/assets             export-ignore
+/_includes          export-ignore
+/_layouts           export-ignore
+/_config.yml        export-ignore
+/.github            export-ignore
+/.idea              export-ignore
+/Makefile           export-ignore
+/CLAUDE.md          export-ignore
+/phpunit.xml.dist   export-ignore
+/phpstan.neon.dist  export-ignore
+/pint.json          export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore

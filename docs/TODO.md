@@ -51,14 +51,19 @@ earlier monorepo-of-record + mirrors model.
   parity, widget rendering/gating).
 - **Bug fix** — `FileManager::restore()` had an inverted `move()` check (reported a successful restore
   as failure and never cleared `deletedAt`); fixed + regression-tested.
+- **Coverage gate in CI** — `ci.yml` now runs `vitest --coverage` (v8 provider, thresholds: lines 89%,
+  functions 88%, statements 89%, branches 84%) on every JS push; on the PHP 8.4 matrix cell it runs
+  `phpunit --coverage-clover` (pcov) and enforces a 70% statement floor via inline Clover XML parsing.
+  `phpunit.xml.dist` gained a `<source>` filter; `js/vitest.config.ts` added for coverage config.
+  Local PHP coverage still needs pcov/xdebug added to the `lfu-test` image (CI uses `setup-php`'s pcov);
+  `make coverage` runs the JS half locally. The `widget` controller interaction paths (auth headers,
+  URL substitution, clipboard, upload flow, delete/restore/cleanup) are now covered in
+  `js/test/widget-controller.test.ts`. Still deferred (low-ROI, better exercised through the
+  HTTP/conformance flows): thin binding adapters `LaravelStorage`/`LaravelClock` and
+  `JsonEnvelope`/`StorageFactory`/`SymfonyChunkPayload` (in the separate binding repos).
 
 ## Remaining (maintainer)
 
-- **Coverage gate in CI** — wire a coverage report + threshold into `ci.yml` (phpunit `--coverage`,
-  vitest `--coverage`); needs pcov/xdebug in the `lfu-test` image (`XDEBUG_MODE=off` is forced in the
-  composer scripts today). Deferred low-ROI unit targets, better exercised through the HTTP/conformance
-  flows: thin adapters `LaravelStorage`/`LaravelClock`, Symfony
-  `JsonEnvelope`/`StorageFactory`/`SymfonyChunkPayload`, and `widget.ts` paths beyond render/config.
 - **Publish (new model, [RELEASING.md](RELEASING.md)):** register `Xakki/file-uploader`,
   `…-laravel`, `…-symfony` on Packagist (GitHub hook) and tag core `v1.0.0`; the bindings now release
   from their own repos. The old mirror workflow/secrets (`MIRROR_PUSH_TOKEN`, `file-uploader-*` mirrors)

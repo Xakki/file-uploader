@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { STRINGS } from '../src/widget/strings';
 import type { FileRow } from '../src/widget/types';
 import { createWidget } from '../src/widget/widget';
@@ -27,6 +27,12 @@ function row(overrides: Partial<FileRow> = {}): FileRow {
 }
 
 describe('createWidget (rendering)', () => {
+  // Default fetch stub so createWidget's mount-time fetchFiles() (allowList defaults on)
+  // never hits the real network. Tests that need a specific payload override via stubFetch.
+  beforeEach(() => {
+    stubFetch({ data: { files: [] } });
+  });
+
   afterEach(() => {
     document.body.innerHTML = '';
     vi.unstubAllGlobals();

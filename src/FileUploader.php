@@ -46,6 +46,13 @@ class FileUploader
         }
         $this->guardFile($payload->fileName(), $payload->mimeType(), $payload->fileSize(), $payload->detectedMimeType());
 
+        // Capacity guard runs only when a brand-new upload starts (its first
+        // chunk). Resumed/continuing chunks (index > 0) belong to an upload that
+        // already began, and dedup hits returned above, so neither is counted.
+        if ($payload->chunkIndex() === 0) {
+            $this->guardFileCount();
+        }
+
         $temporaryDirectory = $this->temporaryDirectoryUpload($payload->uploadId());
         $this->ensureDirectory($temporaryDirectory);
 
@@ -252,6 +259,52 @@ class FileUploader
 
             throw new AttentionException('MIME type is not allowed.');
         }
+    }
+
+    /**
+     * Reject a new upload once the number of active (non-deleted) files reaches
+     * the configured `max_files`. A value of 0 (the default) means unlimited.
+     */
+    protected function guardFileCount(): void
+    {
+        $maxFiles = (int) ($this->config['max_files'] ?? 0);
+        if ($maxFiles > 0 && $this->activeFileCount() >= $maxFiles) {
+            throw new AttentionException('Maximum number of files reached.');
+        }
+    }
+
+    /**
+     * Count active files by scanning metadata, skipping soft-deleted entries.
+     * Kept side-effect-free on purpose (unlike list(), which rewrites metadata
+     * for missing files), so counting never mutates storage.
+     */
+    protected function activeFileCount(): int
+    {
+        $metadataDirectory = $this->metadataDirectory();
+        if (! $this->storage->exists($metadataDirectory)) {
+            return 0;
+        }
+
+        $count = 0;
+        foreach ($this->storage->files($metadataDirectory) as $path) {
+            if (! str_ends_with($path, '.json')) {
+                continue;
+            }
+
+            try {
+                $metadata = $this->readMetadataByPath($path);
+            } catch (Throwable) {
+                continue;
+            }
+
+            if ($metadata->deletedAt) {
+                continue;
+            }
+
+            $count++;
+        }
+
+        return $count;
     }
 
     protected function ensureDirectory(string $path): void

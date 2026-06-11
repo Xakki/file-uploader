@@ -32,7 +32,7 @@ if printf '%s' "$cmd" | grep -Eq '(^|[;&|[:space:]])npm[[:space:]]+(install|ci|r
   block "Use 'make' instead of running npm directly (see 'make help')."
 fi
 if printf '%s' "$cmd" | grep -Eq '(^|[;&|[:space:]])docker[[:space:]]+(run|compose[[:space:]]+(up|down|run))'; then
-  block "Use 'make' instead of running docker directly (make help: test-*, conformance, demo-up/down)."
+  block "Use 'make' instead of running docker directly (see 'make help': test-*, conformance, etc.)."
 fi
 
 exit 0

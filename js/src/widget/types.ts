@@ -8,6 +8,12 @@ export interface WidgetRoutes {
   cleanup?: string;
 }
 
+/** Which built-in layout `createUploader` mounts. */
+export type WidgetTemplate = 'widget' | 'form';
+
+/** Colour scheme. `'auto'` follows the OS `prefers-color-scheme` and updates live. */
+export type WidgetTheme = 'light' | 'dark' | 'auto';
+
 export interface WidgetConfig {
   endpointBase?: string;
   routes?: WidgetRoutes;
@@ -31,12 +37,18 @@ export interface WidgetConfig {
     dropzone?: Partial<CSSStyleDeclaration>;
   };
   container?: string | HTMLElement | null;
+  /** Layout to mount: floating `'widget'` (default) or inline `'form'`. */
+  template?: WidgetTemplate;
+  /** Colour scheme, default `'light'`. `'auto'` tracks the OS preference live. */
+  theme?: WidgetTheme;
 }
 
 export interface WidgetInstance {
   root: HTMLElement;
   refresh: () => Promise<void>;
   destroy: () => void;
+  /** Swap the colour scheme at runtime; `'auto'` (re)subscribes to the media query. */
+  setTheme: (theme: WidgetTheme) => void;
 }
 
 /** A file row as returned by the list endpoint (FileResponse, see protocol/SPEC.md §3.2). */

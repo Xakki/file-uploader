@@ -1,8 +1,8 @@
 {
   "name": "@xakki/file-uploader",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Headless, backend-agnostic chunked file upload client (Upload Protocol v1).",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-or-later",
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -34,14 +34,19 @@
     "url": "https://github.com/Xakki/file-uploader.git",
     "directory": "js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "vendor:php": "tsup && cp dist/file-uploader.umd.global.js ../file-uploader-laravel/resources/assets/js/file-uploader.umd.js && cp dist/file-uploader.umd.global.js ../file-uploader-symfony/public/file-uploader.umd.js"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.1.0",
     "happy-dom": "^20.10.2",
     "tsup": "^8.3.0",
     "typescript": "^5.6.0",

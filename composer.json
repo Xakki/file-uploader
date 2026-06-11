@@ -1,9 +1,9 @@
 {
     "name": "xakki/file-uploader",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Framework-agnostic chunked file uploader core (Upload Protocol v1).",
     "type": "library",
-    "license": "Apache-2.0",
+    "license": "GPL-3.0-or-later",
     "require": {
         "php": "^8.3|^8.4|^8.5",
         "psr/log": "^2|^3",
@@ -29,6 +29,7 @@
     "prefer-stable": true,
     "scripts": {
         "phpunit": "XDEBUG_MODE=off vendor/bin/phpunit",
+        "phpunit-coverage": "XDEBUG_MODE=off vendor/bin/phpunit --coverage-clover coverage.xml",
         "phpstan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --memory-limit=512M"
     }
 }

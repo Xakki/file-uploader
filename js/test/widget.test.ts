@@ -1,11 +1,21 @@
 // @vitest-environment happy-dom
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mountFromGlobalConfig } from '../src/widget/index';
 import { createWidget } from '../src/widget/widget';
 
 describe('createWidget (DOM smoke)', () => {
+  // Default fetch stub so createWidget's mount-time fetchFiles() (allowList on) never hits
+  // the real network — keeps these DOM-smoke tests offline and the log clean.
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ data: { files: [] } }) })),
+    );
+  });
+
   afterEach(() => {
     document.body.innerHTML = '';
+    vi.unstubAllGlobals();
   });
 
   it('mounts the widget and injects styles', () => {

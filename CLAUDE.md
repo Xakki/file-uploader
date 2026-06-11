@@ -20,6 +20,9 @@ read those, don't restate them here.
   [`Xakki/file-uploader-symfony`](https://github.com/Xakki/file-uploader-symfony) (`xakki/symfony-file-uploader`).
 - **Demo (separate repo):** [`Xakki/file-uploader-demo`](https://github.com/Xakki/file-uploader-demo)
   — standalone plain-PHP backend (fs + S3); the custom/PSR usage example.
+  **No demo coupling in this repo:** the demo is driven entirely from its own Makefile/Docker; do not
+  add `demo-*` targets or any reference to `../file-uploader-demo` here. The demo (a consumer) may
+  depend on this core; this core must not depend on the demo.
 
 ## Commands — everything goes through `make`
 

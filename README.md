@@ -3,7 +3,7 @@
 > Universal **chunked file uploader**: one wire contract — **[Upload Protocol v1](protocol/SPEC.md)** —
 > with conforming implementations for **Laravel**, **Symfony**, **any PHP** project, and the **browser**.
 
-[![License](https://img.shields.io/badge/License-Apache--2.0-green)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
 ![PHP](https://img.shields.io/badge/PHP-8.3%2B-777)
 ![Node](https://img.shields.io/badge/Node-18%2B-393)
 
@@ -68,6 +68,7 @@ $manager = new FileManager(
         'disk' => 'local',
         'directory' => 'uploads',
         'max_size' => 50 * 1024 * 1024,
+        'max_files' => 0,             // 0 = unlimited; caps active (non-deleted) files
         'allowed_extensions' => [],   // empty = allow any
         'soft_delete' => true,
         'trash_ttl_days' => 30,
@@ -106,6 +107,40 @@ echo json_encode(ResponseFactory::success($data, 'ok'));
 `FileManager` also provides `list()`, `delete($id)`, `restore($id)`, `cleanupTrash()` and
 `syncMetadata()`. A complete runnable example (plain-PHP, filesystem **and** S3, serving the widget)
 is the **[demo repo](https://github.com/Xakki/file-uploader-demo)**.
+
+### Per-user / per-session isolation
+
+The core has no notion of HTTP, cookies or sessions — identity is the host's job. But all four
+storage directories are plain per-instance config, so to keep every user's files under their own
+folder you just construct the manager with those keys scoped to the user/session id. For example,
+to land everything under `uploads/<session_id>/`:
+
+```php
+$sid = preg_replace('/[^A-Za-z0-9_-]/', '', $sessionId);   // REQUIRED: a path segment, sanitize it
+if ($sid === '') {
+    throw new RuntimeException('Invalid session id.');
+}
+
+config: [
+    'disk'                => 'local',
+    'directory'           => "uploads/$sid",          // → uploads/<sid>/<file>
+    'metadata_directory'  => "uploads/$sid/.meta",
+    'temporary_directory' => "uploads/$sid/.chunks",
+    'trash_directory'     => "uploads/$sid/.trash",
+    // …rest unchanged
+],
+```
+
+Because `list()`, dedup and `cleanupTrash()` all scan the configured metadata/trash dirs, scoping
+them per session gives full isolation for free — each session only ever sees its own files.
+
+> **Sanitize the id.** It becomes a filesystem path segment; an unsanitized value like `../../etc`
+> is path traversal. Allow only a safe charset (e.g. `[A-Za-z0-9_-]`) and reject empties.
+
+Where the `$sessionId` comes from — an auth user id, or a cookie auto-issued to guests — is the
+host's concern: wire it through `Contracts\UserResolver` (so ownership checks line up) and set the
+cookie in your controller/framework. The **[demo](https://github.com/Xakki/file-uploader-demo)**
+shows the guest-cookie variant end to end.
 
 ## Layout
 
@@ -148,4 +183,4 @@ Bindings are developed in their own repos and consume the published core; they r
 
 ## License
 
-[Apache-2.0](LICENSE).
+[GPL-3.0-or-later](LICENSE).
