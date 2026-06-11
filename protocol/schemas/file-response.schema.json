@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Xakki/file-uploader/protocol/schemas/file-response.schema.json",
+  "title": "Upload Protocol v1 — FileResponse",
+  "description": "Public projection of a stored file. `own` is present only in listings.",
+  "type": "object",
+  "required": ["id", "name", "size", "mime", "url", "createdAt", "deletedAt", "lastModified"],
+  "properties": {
+    "id": { "type": "string", "description": "sha256 hash; used as the {id} path param" },
+    "name": { "type": "string" },
+    "size": { "type": "integer", "minimum": 0 },
+    "mime": { "type": "string" },
+    "url": { "type": ["string", "null"] },
+    "createdAt": { "type": "string", "description": "ISO 8601" },
+    "deletedAt": { "type": ["string", "null"], "description": "ISO 8601 when soft-deleted" },
+    "lastModified": { "type": ["integer", "null"], "description": "epoch milliseconds" },
+    "own": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

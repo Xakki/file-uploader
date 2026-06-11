@@ -1,0 +1,186 @@
+openapi: 3.1.0
+info:
+  title: Upload Protocol v1
+  version: 1.0.0
+  description: >
+    Language- and framework-neutral chunked file-upload protocol used by xakki/file-uploader.
+    See SPEC.md for the normative description. Paths are shown under the default `file-upload`
+    prefix; the prefix is server-configurable.
+  license:
+    name: Apache-2.0
+servers:
+  - url: /file-upload
+    description: Default route prefix (configurable)
+
+paths:
+  /chunks:
+    post:
+      operationId: uploadChunk
+      summary: Upload one chunk of a file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [fileChunk, chunkIndex, totalChunks, fileSize, uploadId, fileName, mimeType, fileLastModified]
+              properties:
+                fileChunk: { type: string, format: binary }
+                chunkIndex: { type: integer, minimum: 0 }
+                totalChunks: { type: integer, minimum: 1 }
+                fileSize: { type: integer, minimum: 1 }
+                uploadId: { type: string, maxLength: 60, pattern: '^upload-[0-9]{13}-[a-z0-9]{8}$' }
+                fileName: { type: string, maxLength: 255 }
+                mimeType: { type: string, maxLength: 150 }
+                fileLastModified: { type: integer, minimum: 0 }
+                fileHash: { type: string, maxLength: 128, pattern: '^[a-f0-9]{64}$' }
+                locale: { type: string }
+      responses:
+        '200':
+          description: Chunk accepted (and file assembled when completed)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/ChunkStoreData' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /files:
+    get:
+      operationId: listFiles
+      summary: List non-deleted files (newest first)
+      responses:
+        '200':
+          description: File list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [files]
+                        properties:
+                          files:
+                            type: array
+                            items: { $ref: '#/components/schemas/FileResponse' }
+
+  /files/{id}:
+    delete:
+      operationId: deleteFile
+      summary: Soft-delete a file to trash (or hard-delete if soft-delete disabled)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string }, description: file sha256 hash }
+      responses:
+        '200': { $ref: '#/components/responses/IdOk' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /files/{id}/restore:
+    post:
+      operationId: restoreFile
+      summary: Restore a file from trash
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string }, description: file sha256 hash }
+      responses:
+        '200': { $ref: '#/components/responses/IdOk' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /trash/cleanup:
+    delete:
+      operationId: cleanupTrash
+      summary: Purge trashed files older than the configured TTL
+      responses:
+        '200':
+          description: Number of purged files
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [count]
+                        properties: { count: { type: integer, minimum: 0 } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+components:
+  schemas:
+    SuccessEnvelope:
+      type: object
+      required: [success, data, message]
+      properties:
+        success: { const: true }
+        message: { type: string }
+        data: { type: object }
+    ErrorEnvelope:
+      type: object
+      required: [success, message]
+      properties:
+        success: { const: false }
+        message: { type: string }
+        errors:
+          type: object
+          additionalProperties: { type: array, items: { type: string } }
+    ChunkStoreData:
+      type: object
+      required: [completed]
+      properties:
+        completed: { type: boolean }
+        metadata: { $ref: '#/components/schemas/FileResponse' }
+    FileResponse:
+      type: object
+      required: [id, name, size, mime, url, createdAt, deletedAt, lastModified]
+      properties:
+        id: { type: string, description: 'sha256 hash, used as the {id} path param' }
+        name: { type: string }
+        size: { type: integer, minimum: 0 }
+        mime: { type: string }
+        url: { type: [string, 'null'] }
+        createdAt: { type: string, description: ISO 8601 }
+        deletedAt: { type: [string, 'null'], description: ISO 8601 when soft-deleted }
+        lastModified: { type: [integer, 'null'], description: epoch milliseconds }
+        own: { type: boolean, description: present only in listings }
+  responses:
+    ValidationError:
+      description: Validation error / disallowed extension / hash mismatch
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    Forbidden:
+      description: Not allowed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    NotFound:
+      description: File not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    ServerError:
+      description: Unexpected server error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    IdOk:
+      description: Affected file id
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/SuccessEnvelope'
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    required: [id]
+                    properties: { id: { type: string } }

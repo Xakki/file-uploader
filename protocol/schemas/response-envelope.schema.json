@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Xakki/file-uploader/protocol/schemas/response-envelope.schema.json",
+  "title": "Upload Protocol v1 — response envelope",
+  "oneOf": [
+    {
+      "title": "success",
+      "type": "object",
+      "required": ["success", "data", "message"],
+      "properties": {
+        "success": { "const": true },
+        "message": { "type": "string" },
+        "data": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    {
+      "title": "error",
+      "type": "object",
+      "required": ["success", "message"],
+      "properties": {
+        "success": { "const": false },
+        "message": { "type": "string" },
+        "errors": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "additionalProperties": false
+    }
+  ],
+  "$defs": {
+    "chunkStoreData": {
+      "title": "data for POST {prefix}/chunks",
+      "type": "object",
+      "required": ["completed"],
+      "properties": {
+        "completed": { "type": "boolean" },
+        "metadata": { "$ref": "file-response.schema.json" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "completed": { "const": true } } },
+          "then": { "required": ["completed", "metadata"] }
+        }
+      ]
+    },
+    "listData": {
+      "title": "data for GET {prefix}/files",
+      "type": "object",
+      "required": ["files"],
+      "properties": {
+        "files": { "type": "array", "items": { "$ref": "file-response.schema.json" } }
+      }
+    },
+    "idData": {
+      "title": "data for delete/restore",
+      "type": "object",
+      "required": ["id"],
+      "properties": { "id": { "type": "string" } }
+    },
+    "cleanupData": {
+      "title": "data for DELETE {prefix}/trash/cleanup",
+      "type": "object",
+      "required": ["count"],
+      "properties": { "count": { "type": "integer", "minimum": 0 } }
+    }
+  }
+}

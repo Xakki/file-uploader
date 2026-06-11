@@ -1,0 +1,39 @@
+name: Release
+
+# Publishing model (see docs/RELEASING.md and docs/adr/0002-base-repo-plus-binding-repos.md):
+#   - Core `xakki/file-uploader` (this repo) publishes to Packagist directly from the repo root via
+#     the Packagist GitHub hook on a `vX.Y.Z` tag — no workflow step needed.
+#   - The Laravel / Symfony bindings publish from their own repos the same way.
+#   - This workflow only builds and publishes the npm package `@xakki/file-uploader` on a `js/vX.Y.Z` tag.
+#
+# Required setup (one-time, by the maintainer):
+#   - Add secret NPM_TOKEN for npm publish.
+#   - Register the repo on Packagist and enable its GitHub auto-update hook.
+
+on:
+  push:
+    tags:
+      - 'js/v*'
+
+permissions:
+  contents: read
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+          cache-dependency-path: js/package-lock.json
+      - run: npm ci
+        working-directory: js
+      - run: npm run build
+        working-directory: js
+      - run: npm publish --access public
+        working-directory: js
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

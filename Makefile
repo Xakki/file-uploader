@@ -1,52 +1,61 @@
 SHELL = /bin/bash
-### https://makefiletutorial.com/
+### https://makefiletutorial.com/ — single entry point for all dev/test operations.
+### PHP/Node run in Docker (no native toolchain required); override the images if needed.
+### This repo is the base package (core) + protocol + js; the framework bindings live in their own repos.
 
--include ./.env
-export
+PHP_IMAGE  ?= lfu-test:latest
+NODE_IMAGE ?= node:22-alpine
 
-docker := docker run -it -v $(PWD):/app ${DOCKER_USER}/${TAG}
-composer := $(docker) composer
+# Reusable docker prefixes: repo mounted at /repo, composer caches in /tmp.
+DOCKER_PHP  = docker run --rm -v "$(CURDIR)":/repo -e COMPOSER_HOME=/tmp/c -e COMPOSER_CACHE_DIR=/tmp/cc
+DOCKER_NODE = docker run --rm -v "$(CURDIR)":/repo
 
-run: docker-build clear composer-u test
+.DEFAULT_GOAL := help
+.PHONY: help install test test-core test-js conformance phpstan pint pint-fix clean verify-binding
 
-clear:
-	$(docker) rm -rf vendor composer.lock .phpunit.result.cache
+##@ Help
+help:  ## Display this help
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) }' $(MAKEFILE_LIST)
 
-docker-login:
-	docker login ${HOST} -u ${DOCKER_USER} -p ${DOCKER_PASS}
+##@ Install
+install:  ## Install deps (core + js)
+	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer install --no-interaction'
+	$(DOCKER_NODE) -w /repo/js $(NODE_IMAGE) sh -lc 'npm ci'
 
-docker-push:
-	docker push ${DOCKER_USER}/${TAG}
+##@ Test
+test: test-core test-js  ## Run the core + js suites
 
-docker-build:
-	docker pull ${PHP_IMAGE}
-	docker build -t ${DOCKER_USER}/${TAG} --build-arg PHP_IMAGE=${PHP_IMAGE} .
+test-core:  ## core (repo root): phpunit + phpstan
+	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer install -q --no-interaction && composer phpunit && composer phpstan'
 
-bash:
-	$(docker) bash
+test-js:  ## js: typecheck + vitest + build
+	$(DOCKER_NODE) -w /repo/js $(NODE_IMAGE) sh -lc 'npm ci && npm run typecheck && npm test && npm run build'
 
-composer-i:
-	$(composer) i --prefer-dist --no-scripts
+conformance:  ## Run the shared protocol/fixtures suite (js client; anti-drift gate)
+	$(DOCKER_NODE) -w /repo/js $(NODE_IMAGE) sh -lc 'npm ci && npm test -- conformance'
 
-composer-u:
-	$(composer) u --prefer-dist $(name)
+##@ Quality
+phpstan:  ## phpstan on the core
+	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer install -q --no-interaction && composer phpstan'
 
-composer-r:
-	$(composer) r --prefer-dist $(name)
+pint:  ## Pint style check (src tests)
+	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer global require -q laravel/pint && $$(composer global config home)/vendor/bin/pint --test src tests'
 
-cs-fix:
-	$(composer) cs-fix
+pint-fix:  ## Pint auto-fix (src tests)
+	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer global require -q laravel/pint && $$(composer global config home)/vendor/bin/pint src tests'
 
-cs-check:
-	$(composer) cs-check
+##@ Bindings
+verify-binding:  ## Smoke-test a sibling binding repo against this working-tree core (DIR=../file-uploader-laravel)
+	docker run --rm -v "$(dir $(CURDIR))":/work -e COMPOSER_HOME=/tmp/c -e COMPOSER_CACHE_DIR=/tmp/cc \
+	  -w /work/$(notdir $(DIR)) $(PHP_IMAGE) sh -lc '\
+	    cp composer.json /tmp/cj.bak; \
+	    composer config repositories.coredev path ../file-uploader; \
+	    composer require "xakki/file-uploader:*@dev" --no-update -W -q; \
+	    composer update --no-interaction; \
+	    composer phpunit; st=$$?; \
+	    cp /tmp/cj.bak composer.json; rm -f composer.lock; \
+	    exit $$st'
 
-phpstan:
-	$(composer) phpstan
-
-phpunit:
-	$(composer) phpunit
-
-test:
-	$(composer) cs-check
-	$(composer) phpstan
-	$(composer) phpunit
+##@ Maintenance
+clean:  ## Remove installed deps and build artifacts
+	rm -rf vendor js/node_modules js/dist

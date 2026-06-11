@@ -1,0 +1,30 @@
+{
+  "name": "single-chunk-upload",
+  "description": "A file smaller than one chunk completes in a single request.",
+  "file": {
+    "name": "note.txt",
+    "mime": "text/plain",
+    "sizeBytes": 11,
+    "lastModified": 1700000000000,
+    "fillByte": 65
+  },
+  "requests": [
+    {
+      "fields": {
+        "chunkIndex": 0,
+        "totalChunks": 1,
+        "fileSize": 11,
+        "uploadId": "upload-1700000000000-abcd1234",
+        "fileName": "note.txt",
+        "mimeType": "text/plain",
+        "fileLastModified": 1700000000000
+      },
+      "chunkBytes": 11,
+      "expect": {
+        "status": 200,
+        "success": true,
+        "data": { "completed": true, "metadata": { "name": "note.txt", "size": 11, "mime": "text/plain" } }
+      }
+    }
+  ]
+}

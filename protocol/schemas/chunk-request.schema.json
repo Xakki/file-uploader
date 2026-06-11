@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Xakki/file-uploader/protocol/schemas/chunk-request.schema.json",
+  "title": "Upload Protocol v1 — chunk request fields",
+  "description": "Scalar multipart/form-data fields of POST {prefix}/chunks. The binary `fileChunk` part is described separately (it cannot be expressed in JSON Schema).",
+  "type": "object",
+  "required": ["chunkIndex", "totalChunks", "fileSize", "uploadId", "fileName", "mimeType", "fileLastModified"],
+  "additionalProperties": false,
+  "properties": {
+    "chunkIndex": { "type": "integer", "minimum": 0 },
+    "totalChunks": { "type": "integer", "minimum": 1 },
+    "fileSize": { "type": "integer", "minimum": 1 },
+    "uploadId": { "type": "string", "maxLength": 60, "pattern": "^upload-[0-9]{13}-[a-z0-9]{8}$" },
+    "fileName": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "mimeType": { "type": "string", "minLength": 1, "maxLength": 150 },
+    "fileLastModified": { "type": "integer", "minimum": 0 },
+    "fileHash": { "type": "string", "maxLength": 128, "pattern": "^[a-f0-9]{64}$" },
+    "locale": { "type": "string" }
+  }
+}

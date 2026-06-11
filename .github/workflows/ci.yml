@@ -2,33 +2,111 @@ name: CI
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
-  tests:
+  changes:
     runs-on: ubuntu-latest
-
+    outputs:
+      core: ${{ steps.f.outputs.core }}
+      js: ${{ steps.f.outputs.js }}
+      php: ${{ steps.f.outputs.php }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: f
         with:
-          php-version: '8.3'
-          coverage: none
+          filters: |
+            core:
+              - 'src/**'
+              - 'tests/**'
+              - 'composer.json'
+              - 'phpunit.xml.dist'
+              - 'phpstan.neon.dist'
+              - 'protocol/fixtures/**'
+              - '.github/workflows/ci.yml'
+            js:
+              - 'js/**'
+              - 'protocol/fixtures/**'
+              - '.github/workflows/ci.yml'
+            php:
+              - 'src/**'
+              - 'tests/**'
+              - 'pint.json'
+              - '.github/workflows/ci.yml'
+
+  php-core:
+    needs: changes
+    if: ${{ needs.changes.outputs.core == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
+    name: php-core (PHP ${{ matrix.php }})
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
           extensions: mbstring, fileinfo
+          coverage: none
           tools: composer:v2
+      - run: composer install --prefer-dist --no-progress --no-interaction
+      - run: composer phpunit
+      - run: composer phpstan
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+  pint:
+    needs: changes
+    if: ${{ needs.changes.outputs.php == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+      - run: composer global require laravel/pint --no-progress
+      - run: "$(composer global config home)/vendor/bin/pint --test src tests"
 
-      - name: Run Pint
-        run: vendor/bin/pint --test
+  js:
+    needs: changes
+    if: ${{ needs.changes.outputs.js == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: js/package-lock.json
+      - run: npm ci
+        working-directory: js
+      - run: npm run typecheck
+        working-directory: js
+      - run: npm test
+        working-directory: js
+      - run: npm run build
+        working-directory: js
 
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --memory-limit=512M
-
-      - name: Run PHPUnit
-        run: vendor/bin/phpunit
+  ci:
+    if: always()
+    needs: [php-core, pint, js]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all jobs succeeded or were skipped
+        run: |
+          for r in \
+            "${{ needs.php-core.result }}" \
+            "${{ needs.pint.result }}" \
+            "${{ needs.js.result }}"; do
+            echo "result: $r"
+            if [ "$r" = "failure" ] || [ "$r" = "cancelled" ]; then
+              exit 1
+            fi
+          done

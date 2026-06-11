@@ -4,3 +4,15 @@
 /storage/
 /.idea
 /.env
+
+# Claude Code: commit settings.json + hooks; keep local overrides + logs out
+/.claude/settings.local.json
+/.claude/instructions-loaded.log
+/CLAUDE.local.md
+
+# deps / build output
+**/vendor/
+**/composer.lock
+**/.phpunit.result.cache
+**/node_modules/
+/js/dist/

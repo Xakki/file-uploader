@@ -1,0 +1,47 @@
+{
+  "name": "two-chunk-upload",
+  "description": "Intermediate chunk returns completed:false; final chunk assembles and returns metadata.",
+  "file": {
+    "name": "doc.bin",
+    "mime": "application/octet-stream",
+    "sizeBytes": 1572864,
+    "lastModified": 1700000000000,
+    "fillByte": 0
+  },
+  "requests": [
+    {
+      "fields": {
+        "chunkIndex": 0,
+        "totalChunks": 2,
+        "fileSize": 1572864,
+        "uploadId": "upload-1700000000000-aaaa0001",
+        "fileName": "doc.bin",
+        "mimeType": "application/octet-stream",
+        "fileLastModified": 1700000000000
+      },
+      "chunkBytes": 1048576,
+      "expect": {
+        "status": 200,
+        "success": true,
+        "data": { "completed": false }
+      }
+    },
+    {
+      "fields": {
+        "chunkIndex": 1,
+        "totalChunks": 2,
+        "fileSize": 1572864,
+        "uploadId": "upload-1700000000000-aaaa0001",
+        "fileName": "doc.bin",
+        "mimeType": "application/octet-stream",
+        "fileLastModified": 1700000000000
+      },
+      "chunkBytes": 524288,
+      "expect": {
+        "status": 200,
+        "success": true,
+        "data": { "completed": true, "metadata": { "name": "doc.bin", "size": 1572864, "mime": "application/octet-stream" } }
+      }
+    }
+  ]
+}
