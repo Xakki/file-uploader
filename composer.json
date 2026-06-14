@@ -1,6 +1,6 @@
 {
     "name": "xakki/file-uploader",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "Framework-agnostic chunked file uploader core (Upload Protocol v1).",
     "type": "library",
     "license": "GPL-3.0-or-later",

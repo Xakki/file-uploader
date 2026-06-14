@@ -7,7 +7,6 @@
 /js                 export-ignore
 /go                 export-ignore
 /python             export-ignore
-/assets             export-ignore
 /_includes          export-ignore
 /_layouts           export-ignore
 /_config.yml        export-ignore
