@@ -11,8 +11,8 @@ published by the Packagist GitHub hook on a `vX.Y.Z` tag. npm publishes from `js
 |---|---|---|---|
 | `xakki/file-uploader` (core) | `Xakki/file-uploader` (this) | `vX.Y.Z` | Packagist (root, GitHub hook) |
 | `@xakki/file-uploader` (js) | `Xakki/file-uploader` (this), `js/` | `js/vX.Y.Z` | npm (release workflow) |
-| `xakki/laravel-file-uploader` | `Xakki/file-uploader-laravel` | `vX.Y.Z` | Packagist (root, GitHub hook) |
-| `xakki/symfony-file-uploader` | `Xakki/file-uploader-symfony` | `vX.Y.Z` | Packagist (root, GitHub hook) |
+| `xakki/file-uploader-laravel` | `Xakki/file-uploader-laravel` | `vX.Y.Z` | Packagist (root, GitHub hook) |
+| `xakki/file-uploader-symfony` | `Xakki/file-uploader-symfony` | `vX.Y.Z` | Packagist (root, GitHub hook) |
 | `go` (planned) | tbd | `go/vX.Y.Z` | Go module proxy |
 | `python` (planned) | tbd | `python/vX.Y.Z` | PyPI |
 

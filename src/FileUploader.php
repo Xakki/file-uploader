@@ -63,7 +63,7 @@ class FileUploader
             fclose($stream);
         }
         if (! $written) {
-            throw new AttentionException('Failed to persist chunk.');
+            throw new AttentionException('error.chunk_persist_failed');
         }
 
         $completed = ($payload->chunkIndex() + 1) >= $payload->totalChunks();
@@ -188,7 +188,7 @@ class FileUploader
     {
         $maxSize = (int) ($this->config['max_size'] ?? 0);
         if ($maxSize > 0 && $size > $maxSize) {
-            throw new AttentionException('File exceeds maximum allowed size.');
+            throw new AttentionException('error.max_size_exceeded');
         }
 
         $allowedExtensions = $this->config['allowed_extensions'] ?? [];
@@ -240,7 +240,7 @@ class FileUploader
                     return;
                 }
 
-                throw new AttentionException('Extension `'.$extension.'` is not allowed for MIME type `'.$mime.'`.');
+                throw new AttentionException('error.extension_mime_mismatch', ['ext' => $extension, 'mime' => $mime]);
             }
 
             if (! empty($extensionAllowList)) {
@@ -250,14 +250,14 @@ class FileUploader
                     return;
                 }
 
-                throw new AttentionException('Extension `'.$extension.'` is not allowed.');
+                throw new AttentionException('error.extension_not_allowed', ['ext' => $extension]);
             }
 
             if ($mime !== null) {
-                throw new AttentionException('MIME type `'.$mime.'` is not allowed.');
+                throw new AttentionException('error.mime_not_allowed', ['mime' => $mime]);
             }
 
-            throw new AttentionException('MIME type is not allowed.');
+            throw new AttentionException('error.mime_not_allowed_unknown');
         }
     }
 
@@ -269,7 +269,7 @@ class FileUploader
     {
         $maxFiles = (int) ($this->config['max_files'] ?? 0);
         if ($maxFiles > 0 && $this->activeFileCount() >= $maxFiles) {
-            throw new AttentionException('Maximum number of files reached.');
+            throw new AttentionException('error.max_files_reached');
         }
     }
 

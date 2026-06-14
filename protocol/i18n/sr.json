@@ -1,0 +1,30 @@
+{
+  "error.chunk_persist_failed": "Nije moguće sačuvati deo fajla.",
+  "error.max_size_exceeded": "Fajl premašuje maksimalno dozvoljenu veličinu.",
+  "error.extension_mime_mismatch": "Ekstenzija „{ext}“ nije dozvoljena za MIME tip „{mime}“.",
+  "error.extension_not_allowed": "Ekstenzija „{ext}“ nije dozvoljena.",
+  "error.mime_not_allowed": "MIME tip „{mime}“ nije dozvoljen.",
+  "error.mime_not_allowed_unknown": "MIME tip nije dozvoljen.",
+  "error.max_files_reached": "Dostignut je maksimalan broj fajlova.",
+  "error.not_authorized_delete": "Nemate dozvolu da obrišete ovaj fajl.",
+  "error.not_authorized_restore": "Nemate dozvolu da vratite ovaj fajl.",
+  "validation.field_required": "Polje {field} je obavezno.",
+  "validation.field_string": "Polje {field} mora biti string.",
+  "validation.field_max_chars": "Polje {field} ne sme premašiti {max} karaktera.",
+  "validation.field_integer": "Polje {field} mora biti ceo broj.",
+  "validation.field_min": "Polje {field} mora biti najmanje {min}.",
+  "validation.uploadid_invalid": "Format uploadId je neispravan.",
+  "validation.filehash_invalid": "Polje fileHash je neispravno.",
+  "validation.locale_invalid": "Izabrani jezik je neispravan.",
+  "message.chunk_received": "Otpremljen deo {current} od {total}.",
+  "message.upload_completed": "Fajl „{name}“ je uspešno otpremljen.",
+  "message.moved_to_trash": "Fajl je premešten u korpu.",
+  "message.restored": "Fajl je vraćen.",
+  "message.cleanup_done": {
+    "one": "Uklonjen {count} fajl iz korpe.",
+    "few": "Uklonjena {count} fajla iz korpe.",
+    "other": "Uklonjeno {count} fajlova iz korpe."
+  },
+  "message.not_found": "Fajl nije pronađen.",
+  "message.not_allow": "Operacija nije dozvoljena."
+}

@@ -122,12 +122,16 @@ components:
         success: { const: true }
         message: { type: string }
         data: { type: object }
+        code: { type: string, description: 'Stable message code (see SPEC §5); resolves to `message`.' }
+        params: { type: object, additionalProperties: true, description: 'Placeholder values for the code template.' }
     ErrorEnvelope:
       type: object
       required: [success, message]
       properties:
         success: { const: false }
         message: { type: string }
+        code: { type: string, description: 'Stable error code (see SPEC §5); resolves to `message`.' }
+        params: { type: object, additionalProperties: true, description: 'Placeholder values for the code template.' }
         errors:
           type: object
           additionalProperties: { type: array, items: { type: string } }

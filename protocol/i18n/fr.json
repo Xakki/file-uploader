@@ -1,0 +1,29 @@
+{
+  "error.chunk_persist_failed": "Impossible d’enregistrer le fragment du fichier.",
+  "error.max_size_exceeded": "Le fichier dépasse la taille maximale autorisée.",
+  "error.extension_mime_mismatch": "L’extension «{ext}» n’est pas autorisée pour le type MIME «{mime}».",
+  "error.extension_not_allowed": "L’extension «{ext}» n’est pas autorisée.",
+  "error.mime_not_allowed": "Le type MIME «{mime}» n’est pas autorisé.",
+  "error.mime_not_allowed_unknown": "Le type MIME n’est pas autorisé.",
+  "error.max_files_reached": "Nombre maximal de fichiers atteint.",
+  "error.not_authorized_delete": "Vous n’êtes pas autorisé à supprimer ce fichier.",
+  "error.not_authorized_restore": "Vous n’êtes pas autorisé à restaurer ce fichier.",
+  "validation.field_required": "Le champ {field} est obligatoire.",
+  "validation.field_string": "Le champ {field} doit être une chaîne de caractères.",
+  "validation.field_max_chars": "Le champ {field} ne doit pas dépasser {max} caractères.",
+  "validation.field_integer": "Le champ {field} doit être un nombre entier.",
+  "validation.field_min": "Le champ {field} doit être au moins {min}.",
+  "validation.uploadid_invalid": "Le format de uploadId est invalide.",
+  "validation.filehash_invalid": "Le champ fileHash est invalide.",
+  "validation.locale_invalid": "La langue sélectionnée est invalide.",
+  "message.chunk_received": "Fragment {current} sur {total} téléversé.",
+  "message.upload_completed": "Le fichier «{name}» a été téléversé avec succès.",
+  "message.moved_to_trash": "Fichier déplacé vers la corbeille.",
+  "message.restored": "Fichier restauré.",
+  "message.cleanup_done": {
+    "one": "{count} fichier supprimé de la corbeille.",
+    "other": "{count} fichiers supprimés de la corbeille."
+  },
+  "message.not_found": "Fichier introuvable.",
+  "message.not_allow": "Opération non autorisée."
+}

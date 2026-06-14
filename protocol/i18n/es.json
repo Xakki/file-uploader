@@ -1,0 +1,29 @@
+{
+  "error.chunk_persist_failed": "No se pudo guardar el fragmento del archivo.",
+  "error.max_size_exceeded": "El archivo supera el tamaño máximo permitido.",
+  "error.extension_mime_mismatch": "La extensión «{ext}» no está permitida para el tipo MIME «{mime}».",
+  "error.extension_not_allowed": "La extensión «{ext}» no está permitida.",
+  "error.mime_not_allowed": "El tipo MIME «{mime}» no está permitido.",
+  "error.mime_not_allowed_unknown": "El tipo MIME no está permitido.",
+  "error.max_files_reached": "Se alcanzó el número máximo de archivos.",
+  "error.not_authorized_delete": "No tienes permiso para eliminar este archivo.",
+  "error.not_authorized_restore": "No tienes permiso para restaurar este archivo.",
+  "validation.field_required": "El campo {field} es obligatorio.",
+  "validation.field_string": "El campo {field} debe ser una cadena de texto.",
+  "validation.field_max_chars": "El campo {field} no debe superar los {max} caracteres.",
+  "validation.field_integer": "El campo {field} debe ser un número entero.",
+  "validation.field_min": "El campo {field} debe ser como mínimo {min}.",
+  "validation.uploadid_invalid": "El formato de uploadId no es válido.",
+  "validation.filehash_invalid": "El campo fileHash no es válido.",
+  "validation.locale_invalid": "La configuración regional seleccionada no es válida.",
+  "message.chunk_received": "Fragmento {current} de {total} subido.",
+  "message.upload_completed": "El archivo «{name}» se subió correctamente.",
+  "message.moved_to_trash": "Archivo movido a la papelera.",
+  "message.restored": "Archivo restaurado.",
+  "message.cleanup_done": {
+    "one": "Se eliminó {count} archivo de la papelera.",
+    "other": "Se eliminaron {count} archivos de la papelera."
+  },
+  "message.not_found": "Archivo no encontrado.",
+  "message.not_allow": "Operación no permitida."
+}

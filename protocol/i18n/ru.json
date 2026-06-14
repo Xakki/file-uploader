@@ -1,0 +1,31 @@
+{
+  "error.chunk_persist_failed": "Не удалось сохранить часть файла.",
+  "error.max_size_exceeded": "Файл превышает максимально допустимый размер.",
+  "error.extension_mime_mismatch": "Расширение «{ext}» недопустимо для MIME-типа «{mime}».",
+  "error.extension_not_allowed": "Расширение «{ext}» недопустимо.",
+  "error.mime_not_allowed": "MIME-тип «{mime}» недопустим.",
+  "error.mime_not_allowed_unknown": "MIME-тип недопустим.",
+  "error.max_files_reached": "Достигнуто максимальное число файлов.",
+  "error.not_authorized_delete": "У вас нет прав на удаление этого файла.",
+  "error.not_authorized_restore": "У вас нет прав на восстановление этого файла.",
+  "validation.field_required": "Поле {field} обязательно для заполнения.",
+  "validation.field_string": "Поле {field} должно быть строкой.",
+  "validation.field_max_chars": "Поле {field} не должно превышать {max} символов.",
+  "validation.field_integer": "Поле {field} должно быть целым числом.",
+  "validation.field_min": "Поле {field} должно быть не меньше {min}.",
+  "validation.uploadid_invalid": "Неверный формат uploadId.",
+  "validation.filehash_invalid": "Неверное значение поля fileHash.",
+  "validation.locale_invalid": "Выбранная локаль недопустима.",
+  "message.chunk_received": "Чанк {current} из {total} загружен.",
+  "message.upload_completed": "Файл «{name}» успешно загружен.",
+  "message.moved_to_trash": "Файл перемещён в корзину.",
+  "message.restored": "Файл восстановлен.",
+  "message.cleanup_done": {
+    "one": "Удалён {count} файл из корзины.",
+    "few": "Удалено {count} файла из корзины.",
+    "many": "Удалено {count} файлов из корзины.",
+    "other": "Удалено {count} файла из корзины."
+  },
+  "message.not_found": "Файл не найден.",
+  "message.not_allow": "Действие не разрешено."
+}

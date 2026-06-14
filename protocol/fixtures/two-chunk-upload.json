@@ -23,6 +23,7 @@
       "expect": {
         "status": 200,
         "success": true,
+        "code": "message.chunk_received",
         "data": { "completed": false }
       }
     },
@@ -40,6 +41,7 @@
       "expect": {
         "status": 200,
         "success": true,
+        "code": "message.upload_completed",
         "data": { "completed": true, "metadata": { "name": "doc.bin", "size": 1572864, "mime": "application/octet-stream" } }
       }
     }

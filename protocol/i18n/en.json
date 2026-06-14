@@ -1,0 +1,29 @@
+{
+  "error.chunk_persist_failed": "Failed to persist chunk.",
+  "error.max_size_exceeded": "File exceeds maximum allowed size.",
+  "error.extension_mime_mismatch": "Extension `{ext}` is not allowed for MIME type `{mime}`.",
+  "error.extension_not_allowed": "Extension `{ext}` is not allowed.",
+  "error.mime_not_allowed": "MIME type `{mime}` is not allowed.",
+  "error.mime_not_allowed_unknown": "MIME type is not allowed.",
+  "error.max_files_reached": "Maximum number of files reached.",
+  "error.not_authorized_delete": "You are not allowed to delete this file.",
+  "error.not_authorized_restore": "You are not allowed to restore this file.",
+  "validation.field_required": "The {field} field is required.",
+  "validation.field_string": "The {field} field must be a string.",
+  "validation.field_max_chars": "The {field} field must not exceed {max} characters.",
+  "validation.field_integer": "The {field} field must be an integer.",
+  "validation.field_min": "The {field} field must be at least {min}.",
+  "validation.uploadid_invalid": "The uploadId format is invalid.",
+  "validation.filehash_invalid": "The fileHash field is invalid.",
+  "validation.locale_invalid": "The selected locale is invalid.",
+  "message.chunk_received": "Chunk {current} of {total} uploaded.",
+  "message.upload_completed": "File \" {name} \" uploaded successfully.",
+  "message.moved_to_trash": "File moved to trash.",
+  "message.restored": "File restored.",
+  "message.cleanup_done": {
+    "one": "Removed {count} file from trash.",
+    "other": "Removed {count} files from trash."
+  },
+  "message.not_found": "File not found.",
+  "message.not_allow": "Operation not allowed."
+}

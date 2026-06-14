@@ -28,8 +28,8 @@ implementation runs, so the implementations cannot drift apart. Topology rationa
 | Your stack | Package | Install |
 |---|---|---|
 | **Any PHP** (Slim, Mezzio, plain) | [`xakki/file-uploader`](https://packagist.org/packages/xakki/file-uploader) (this repo, core) | `composer require xakki/file-uploader` |
-| **Laravel** 10–12 | [`xakki/laravel-file-uploader`](https://github.com/Xakki/file-uploader-laravel) | `composer require xakki/laravel-file-uploader` |
-| **Symfony** 6.4 / 7 | [`xakki/symfony-file-uploader`](https://github.com/Xakki/file-uploader-symfony) | `composer require xakki/symfony-file-uploader` |
+| **Laravel** 10–12 | [`xakki/file-uploader-laravel`](https://github.com/Xakki/file-uploader-laravel) | `composer require xakki/file-uploader-laravel` |
+| **Symfony** 6.4 / 7 | [`xakki/file-uploader-symfony`](https://github.com/Xakki/file-uploader-symfony) | `composer require xakki/file-uploader-symfony` |
 | **Browser / SPA** | [`@xakki/file-uploader`](js) | `npm i @xakki/file-uploader` |
 | **No Node build** | vendored UMD widget | ships inside the PHP bindings — no npm needed |
 
@@ -154,8 +154,8 @@ file-uploader/                  ← this repo = xakki/file-uploader (core) + pro
 └── docs/        ADRs + roadmap
 
 Bindings (separate repos, consume the published core):
-  Laravel  → github.com/Xakki/file-uploader-laravel   (xakki/laravel-file-uploader)
-  Symfony  → github.com/Xakki/file-uploader-symfony    (xakki/symfony-file-uploader)
+  Laravel  → github.com/Xakki/file-uploader-laravel   (xakki/file-uploader-laravel)
+  Symfony  → github.com/Xakki/file-uploader-symfony    (xakki/file-uploader-symfony)
   Demo     → github.com/Xakki/file-uploader-demo
 ```
 

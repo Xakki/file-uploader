@@ -21,8 +21,8 @@ Drop the monorepo-of-record + mirrors model in favour of a small **base repo + s
   (spec + conformance fixtures) and the `js/` package (`@xakki/file-uploader`).
 - The framework bindings move to **their own repos**, each its own Packagist package published from its
   root:
-  - `Xakki/file-uploader-laravel` → `xakki/laravel-file-uploader`
-  - `Xakki/file-uploader-symfony` → `xakki/symfony-file-uploader`
+  - `Xakki/file-uploader-laravel` → `xakki/file-uploader-laravel`
+  - `Xakki/file-uploader-symfony` → `xakki/file-uploader-symfony`
 - Bindings `require xakki/file-uploader` from Packagist — no `path` repositories, no mirrors.
 - Conformance fixtures stay canonical in this repo's `protocol/fixtures` and **ship inside the core
   package**; bindings read them from `vendor/xakki/file-uploader/protocol/fixtures`.

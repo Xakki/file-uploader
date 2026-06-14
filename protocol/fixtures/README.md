@@ -28,6 +28,7 @@ running Upload-Protocol-v1 server. A server conforms if every scenario passes.
       "expect": {
         "status": 200,
         "success": true,           // envelope.success
+        "code": "message.chunk_received",  // optional: stable code the envelope must echo (SPEC §5)
         "data": { "completed": false }   // structural subset asserted against envelope.data
       }
     }
@@ -47,6 +48,8 @@ For each request, in order:
    only the keys given are checked; backend-specific values like `url`, `id`/hash, `createdAt`
    are intentionally omitted from fixtures).
 6. If `expect.errors` is present (array of field names), assert `envelope.errors` contains each.
+7. If `expect.code` is present, assert `envelope.code === expect.code` (the stable message/error
+   code, see SPEC §5). Optional: a harness whose implementation has not adopted codes may skip it.
 
 `uploadId` timestamps in fixtures are fixed literals (static files); they only need to satisfy the
 `^upload-[0-9]{13}-[a-z0-9]{8}$` pattern, not be "recent".

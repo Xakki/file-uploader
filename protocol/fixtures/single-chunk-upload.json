@@ -23,6 +23,7 @@
       "expect": {
         "status": 200,
         "success": true,
+        "code": "message.upload_completed",
         "data": { "completed": true, "metadata": { "name": "note.txt", "size": 11, "mime": "text/plain" } }
       }
     }

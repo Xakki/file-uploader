@@ -13,7 +13,7 @@ earlier monorepo-of-record + mirrors model.
 - **PHP core** — `php/core` (`Xakki\FileUploader\`), framework-agnostic over `Storage`/`UserResolver`/
   PSR-3 logger / PSR-20 clock seams; `FlysystemStorage`; `Protocol\ResponseFactory`. Unit-tested.
 - **Laravel binding** — `php/laravel` (v1.0), thin wrapper over core; existing Testbench suite green.
-- **Symfony binding** — `php/symfony` (`xakki/symfony-file-uploader`), `AbstractBundle` over core
+- **Symfony binding** — `php/symfony` (`xakki/file-uploader-symfony`), `AbstractBundle` over core
   (Storage/UserResolver/Clock/Logger seams, controllers, widget renderer, console). Kernel test
   round-trips an upload + delete + widget render. Chunk field validation lives in the shared core
   `Protocol\ChunkValidator` (one rule set for Symfony + the future conformance gate).

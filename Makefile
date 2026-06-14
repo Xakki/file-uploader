@@ -61,6 +61,17 @@ verify-binding:  ## Smoke-test a sibling binding repo against this working-tree 
 	    cp /tmp/cj.bak composer.json; rm -f composer.lock; \
 	    exit $$st'
 
+test-binding:  ## Full CI for a sibling binding against published core (phpunit+phpstan+cs-check). DIR=../file-uploader-laravel
+	docker run --rm $(DOCKER_USER) -v "$(dir $(CURDIR))":/work -e COMPOSER_HOME=/tmp/c -e COMPOSER_CACHE_DIR=/tmp/cc \
+	  -w /work/$(notdir $(DIR)) $(PHP_IMAGE) sh -lc '\
+	    mkdir -p /tmp/b && tar --exclude=vendor --exclude=.git --exclude=composer.lock -cf - . | tar -xf - -C /tmp/b && \
+	    cd /tmp/b && composer update --no-interaction && \
+	    composer phpunit && composer phpstan && composer cs-check'
+
+pint-fix-binding:  ## Auto-fix code style (pint) in a sibling binding (edits host files). DIR=../file-uploader-laravel
+	docker run --rm $(DOCKER_USER) -v "$(dir $(CURDIR))":/work -e COMPOSER_HOME=/tmp/c -e COMPOSER_CACHE_DIR=/tmp/cc \
+	  -w /work/$(notdir $(DIR)) $(PHP_IMAGE) sh -lc 'composer global require -q laravel/pint && $$(composer global config home)/vendor/bin/pint src tests'
+
 ##@ Maintenance
 clean:  ## Remove installed deps and build artifacts
 	rm -rf vendor js/node_modules js/dist

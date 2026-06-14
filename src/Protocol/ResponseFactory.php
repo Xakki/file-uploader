@@ -12,27 +12,45 @@ namespace Xakki\FileUploader\Protocol;
 final class ResponseFactory
 {
     /**
-     * @return array{success: true, data: mixed, message: string}
+     * @param  array<string, scalar>  $params  Placeholder values used to render $message (see SPEC §5).
+     * @return array{success: true, data: mixed, message: string, code?: string, params?: array<string, scalar>}
      */
-    public static function success(mixed $data, string $message): array
+    public static function success(mixed $data, string $message, ?string $code = null, array $params = []): array
     {
-        return [
+        $response = [
             'success' => true,
             'data' => $data,
             'message' => $message,
         ];
+
+        if ($code !== null) {
+            $response['code'] = $code;
+            if ($params !== []) {
+                $response['params'] = $params;
+            }
+        }
+
+        return $response;
     }
 
     /**
      * @param  array<string, string[]>  $errors
-     * @return array{success: false, message: string, errors?: array<string, string[]>}
+     * @param  array<string, scalar>  $params  Placeholder values used to render $message (see SPEC §5).
+     * @return array{success: false, message: string, code?: string, params?: array<string, scalar>, errors?: array<string, string[]>}
      */
-    public static function error(string $message, array $errors = []): array
+    public static function error(string $message, array $errors = [], ?string $code = null, array $params = []): array
     {
         $response = [
             'success' => false,
             'message' => $message,
         ];
+
+        if ($code !== null) {
+            $response['code'] = $code;
+            if ($params !== []) {
+                $response['params'] = $params;
+            }
+        }
 
         if (! empty($errors)) {
             $response['errors'] = $errors;

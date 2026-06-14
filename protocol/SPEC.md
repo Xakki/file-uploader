@@ -157,7 +157,125 @@ Clients SHOULD retry on network errors and `5xx`, with backoff. Clients MUST NOT
 
 ---
 
-## 5. Authentication (binding-defined)
+## 5. Error & message codes
+
+Every server-produced `message` (and every per-field error in the `errors` map) is derived from
+a stable, language-agnostic **`code`** plus optional **`params`**, resolved against per-locale
+**catalogs** shipped in the core package at `protocol/i18n/<locale>.json`. The catalogs are the
+single source of truth reused by **every** implementation (PHP, JS, Go, Python), so the same
+`code` produces identical text everywhere.
+
+A catalog is a flat map of `code → template`. The `code` namespaces are: `error.*` (failed
+operations / exceptions), `validation.*` (per-field input errors), and `message.*`
+(success / action results).
+
+Catalogs ship for these **8 locales** (matching the JS widget's `strings.ts`): `en`, `ru`,
+`es`, `pt`, `zh`, `fr`, `de`, `sr`. `en` is the guaranteed fallback. Additional locales are
+added by dropping a new `protocol/i18n/<locale>.json` with the same code set.
+
+### 5.1 Locale resolution
+
+The locale used to render a response is resolved in this order (uniform across implementations):
+
+1. an explicit locale supplied by the caller (server-side API), else
+2. the request `locale` field (§2), if present and valid (∈ the server's configured `locales`), else
+3. the server's configured default locale, else
+4. `en` (the guaranteed fallback locale).
+
+### 5.2 Placeholder convention
+
+A template may contain placeholders of the form `{key}`. Each `{key}` is substituted by
+`params[key]`, stringified. The convention is deliberately framework-neutral — **not** Laravel's
+`:name`, **not** Symfony/ICU `%name%` — so the catalogs are portable across languages.
+
+```
+template: "Extension {ext} is not allowed for MIME type {mime}."
+params:   { "ext": "exe", "mime": "image/png" }
+result:   "Extension exe is not allowed for MIME type image/png."
+```
+
+### 5.3 Plural convention
+
+A catalog value is **either** a plain string (no pluralization) **or** an object keyed by
+**CLDR plural categories**: `zero`, `one`, `two`, `few`, `many`, `other`. `other` is **required**
+as the fallback. The implementation computes the plural category for the count (conventionally
+the `{count}` param) in the **target locale**, selects that key, and falls back to `other` when
+the category is absent. The integer-cardinal rules for the shipped locales are reproduced here
+so an implementation needs no CLDR library:
+
+- **en**, **de**, **es:** `n == 1 → one`; otherwise `other`.
+- **pt**, **fr:** `n == 0 || n == 1 → one`; otherwise `other`.
+- **zh:** no plural distinction — a single form (stored as a plain string, not an object).
+- **ru**, **sr** (using `i = n % 10` and `j = n % 100`):
+  - `one`  — `i == 1 && j != 11`
+  - `few`  — `i` in `2..4` && `j` **not** in `12..14`
+  - `many` — `i == 0` || `i` in `5..9` || `j` in `11..14` *(ru only; `sr` folds this into `other`)*
+  - `other` — everything else (incl. fractional `n`)
+
+```jsonc
+// catalog value for message.cleanup_done
+"en": { "one": "Removed {count} file from trash.", "other": "Removed {count} files from trash." }
+"ru": { "one":  "Удалён {count} файл из корзины.",
+        "few":  "Удалено {count} файла из корзины.",
+        "many": "Удалено {count} файлов из корзины.",
+        "other":"Удалено {count} файла из корзины." }
+```
+
+### 5.4 Code catalog
+
+The following codes are normative. The `Params` column lists the placeholder keys each template
+may use; `HTTP` is the response status the code is emitted with. The human text lives in the
+catalog files (`protocol/i18n/<locale>.json`) and is **not** duplicated here — the `Note` is a
+short description only.
+
+| Code | Params | HTTP | Note |
+|------|--------|------|------|
+| `error.chunk_persist_failed`    | —            | 422 | failed to persist a chunk                |
+| `error.max_size_exceeded`       | —            | 422 | file exceeds `max_size`                  |
+| `error.extension_mime_mismatch` | `ext`, `mime`| 422 | extension not allowed for that MIME      |
+| `error.extension_not_allowed`   | `ext`        | 422 | extension not in allow-list              |
+| `error.mime_not_allowed`        | `mime`       | 422 | MIME not in allow-list                   |
+| `error.mime_not_allowed_unknown`| —            | 422 | MIME could not be determined             |
+| `error.max_files_reached`       | —            | 422 | active-file cap reached                  |
+| `error.not_authorized_delete`   | —            | 403 | caller may not delete this file          |
+| `error.not_authorized_restore`  | —            | 403 | caller may not restore this file         |
+| `validation.field_required`     | `field`      | 422 | required field missing (errors map)      |
+| `validation.field_string`       | `field`      | 422 | field must be a string                   |
+| `validation.field_max_chars`    | `field`, `max`| 422 | field too long                          |
+| `validation.field_integer`      | `field`      | 422 | field must be an integer                 |
+| `validation.field_min`          | `field`, `min`| 422 | field below minimum                     |
+| `validation.uploadid_invalid`   | —            | 422 | `uploadId` pattern mismatch              |
+| `validation.filehash_invalid`   | —            | 422 | `fileHash` invalid                       |
+| `validation.locale_invalid`     | —            | 422 | `locale` not in configured set           |
+| `message.chunk_received`        | `current`, `total`| 200 | non-final chunk stored              |
+| `message.upload_completed`      | `name`       | 200 | final chunk; file assembled              |
+| `message.moved_to_trash`        | —            | 200 | soft-deleted                             |
+| `message.restored`              | —            | 200 | restored from trash                      |
+| `message.cleanup_done`          | `count` (plural)| 200 | expired trash purged                  |
+| `message.not_found`             | —            | 404 | file not found                           |
+| `message.not_allow`             | —            | 403 | operation not allowed                    |
+
+### 5.5 Mapping to the envelope
+
+- `validation.*` codes populate the per-field **`errors`** map (§3): each offending field maps to
+  the rendered message(s) for its code.
+- `error.*` and `message.*` codes render the envelope-level **`message`** (§3).
+
+In addition to the human-readable `message`, the envelope carries an optional **`code`** (the
+stable code that produced the message) and **`params`** (the placeholder values used to render
+it) on both the success and error branches — so clients can re-localize and cross-language
+conformance can assert on the stable `code` rather than on prose. Both fields are **optional**
+(an implementation that has not adopted codes still validates); they are reflected in
+`schemas/response-envelope.schema.json` and `openapi.yaml`, and positive `fixtures/` pin the
+expected `code`.
+
+Per-field **error codes** (machine codes for each entry in the `errors` map) are **not** exposed
+on the wire yet — the `errors` map stays `field → rendered message(s)`. Conformance already
+asserts on field *names* (prose-independent), so this is a possible future extension, not a gap.
+
+---
+
+## 6. Authentication (binding-defined)
 
 Auth and CSRF are imposed by the server binding, not by the protocol. The Laravel/Symfony
 bindings sit behind configurable middleware (default: session auth). For cookie-session CSRF
@@ -171,7 +289,7 @@ supply arbitrary headers per request.
 
 ---
 
-## 6. Server configuration knobs (informative)
+## 7. Server configuration knobs (informative)
 
 These affect protocol behaviour but are server-side config, surfaced to clients via the widget
 bootstrap where relevant: `chunkSize` (default 1 MiB), `maxSize`, allowed extensions/MIME map,
@@ -180,7 +298,7 @@ bootstrap where relevant: `chunkSize` (default 1 MiB), `maxSize`, allowed extens
 
 ---
 
-## 7. Conformance
+## 8. Conformance
 
 An implementation conforms to Upload Protocol v1 if:
 

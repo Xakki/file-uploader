@@ -16,8 +16,8 @@ read those, don't restate them here.
   ESM/CJS/UMD. The UMD is vendored into the PHP bindings' assets (`npm run vendor:php`).
 - `go/`, `python/` — conformance-target stubs (planned).
 - **Bindings (separate repos)** that `require xakki/file-uploader` from Packagist:
-  [`Xakki/file-uploader-laravel`](https://github.com/Xakki/file-uploader-laravel) (`xakki/laravel-file-uploader`),
-  [`Xakki/file-uploader-symfony`](https://github.com/Xakki/file-uploader-symfony) (`xakki/symfony-file-uploader`).
+  [`Xakki/file-uploader-laravel`](https://github.com/Xakki/file-uploader-laravel) (`xakki/file-uploader-laravel`),
+  [`Xakki/file-uploader-symfony`](https://github.com/Xakki/file-uploader-symfony) (`xakki/file-uploader-symfony`).
 - **Demo (separate repo):** [`Xakki/file-uploader-demo`](https://github.com/Xakki/file-uploader-demo)
   — standalone plain-PHP backend (fs + S3); the custom/PSR usage example.
   **No demo coupling in this repo:** the demo is driven entirely from its own Makefile/Docker; do not

@@ -1,0 +1,29 @@
+{
+  "error.chunk_persist_failed": "Der Dateiabschnitt konnte nicht gespeichert werden.",
+  "error.max_size_exceeded": "Die Datei überschreitet die maximal zulässige Größe.",
+  "error.extension_mime_mismatch": "Die Erweiterung „{ext}“ ist für den MIME-Typ „{mime}“ nicht zulässig.",
+  "error.extension_not_allowed": "Die Erweiterung „{ext}“ ist nicht zulässig.",
+  "error.mime_not_allowed": "Der MIME-Typ „{mime}“ ist nicht zulässig.",
+  "error.mime_not_allowed_unknown": "Der MIME-Typ ist nicht zulässig.",
+  "error.max_files_reached": "Maximale Anzahl an Dateien erreicht.",
+  "error.not_authorized_delete": "Sie sind nicht berechtigt, diese Datei zu löschen.",
+  "error.not_authorized_restore": "Sie sind nicht berechtigt, diese Datei wiederherzustellen.",
+  "validation.field_required": "Das Feld {field} ist erforderlich.",
+  "validation.field_string": "Das Feld {field} muss eine Zeichenkette sein.",
+  "validation.field_max_chars": "Das Feld {field} darf {max} Zeichen nicht überschreiten.",
+  "validation.field_integer": "Das Feld {field} muss eine ganze Zahl sein.",
+  "validation.field_min": "Das Feld {field} muss mindestens {min} betragen.",
+  "validation.uploadid_invalid": "Das Format von uploadId ist ungültig.",
+  "validation.filehash_invalid": "Das Feld fileHash ist ungültig.",
+  "validation.locale_invalid": "Die ausgewählte Sprache ist ungültig.",
+  "message.chunk_received": "Abschnitt {current} von {total} hochgeladen.",
+  "message.upload_completed": "Die Datei „{name}“ wurde erfolgreich hochgeladen.",
+  "message.moved_to_trash": "Datei in den Papierkorb verschoben.",
+  "message.restored": "Datei wiederhergestellt.",
+  "message.cleanup_done": {
+    "one": "{count} Datei aus dem Papierkorb entfernt.",
+    "other": "{count} Dateien aus dem Papierkorb entfernt."
+  },
+  "message.not_found": "Datei nicht gefunden.",
+  "message.not_allow": "Vorgang nicht zulässig."
+}

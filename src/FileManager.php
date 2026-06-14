@@ -66,7 +66,7 @@ class FileManager extends FileUploader
         }
 
         if (! $this->canManageMetadata($metadata)) {
-            throw new AuthorizationException('You are not allowed to delete this file.');
+            throw new AuthorizationException('error.not_authorized_delete');
         }
 
         if ($metadata->deletedAt) {
@@ -129,7 +129,7 @@ class FileManager extends FileUploader
         }
 
         if (! $this->canManageMetadata($metadata)) {
-            throw new AuthorizationException('You are not allowed to restore this file.');
+            throw new AuthorizationException('error.not_authorized_restore');
         }
 
         $trashPath = $metadata->trashPath;

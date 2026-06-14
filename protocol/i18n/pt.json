@@ -1,0 +1,29 @@
+{
+  "error.chunk_persist_failed": "Não foi possível salvar o fragmento do arquivo.",
+  "error.max_size_exceeded": "O arquivo excede o tamanho máximo permitido.",
+  "error.extension_mime_mismatch": "A extensão «{ext}» não é permitida para o tipo MIME «{mime}».",
+  "error.extension_not_allowed": "A extensão «{ext}» não é permitida.",
+  "error.mime_not_allowed": "O tipo MIME «{mime}» não é permitido.",
+  "error.mime_not_allowed_unknown": "O tipo MIME não é permitido.",
+  "error.max_files_reached": "Número máximo de arquivos atingido.",
+  "error.not_authorized_delete": "Você não tem permissão para excluir este arquivo.",
+  "error.not_authorized_restore": "Você não tem permissão para restaurar este arquivo.",
+  "validation.field_required": "O campo {field} é obrigatório.",
+  "validation.field_string": "O campo {field} deve ser uma cadeia de caracteres.",
+  "validation.field_max_chars": "O campo {field} não deve exceder {max} caracteres.",
+  "validation.field_integer": "O campo {field} deve ser um número inteiro.",
+  "validation.field_min": "O campo {field} deve ser no mínimo {min}.",
+  "validation.uploadid_invalid": "O formato de uploadId é inválido.",
+  "validation.filehash_invalid": "O campo fileHash é inválido.",
+  "validation.locale_invalid": "A localidade selecionada é inválida.",
+  "message.chunk_received": "Fragmento {current} de {total} enviado.",
+  "message.upload_completed": "O arquivo «{name}» foi enviado com sucesso.",
+  "message.moved_to_trash": "Arquivo movido para a lixeira.",
+  "message.restored": "Arquivo restaurado.",
+  "message.cleanup_done": {
+    "one": "{count} arquivo removido da lixeira.",
+    "other": "{count} arquivos removidos da lixeira."
+  },
+  "message.not_found": "Arquivo não encontrado.",
+  "message.not_allow": "Operação não permitida."
+}
