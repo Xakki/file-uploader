@@ -17,3 +17,6 @@ changes bump the major.
   `many`/`other`, `other` required), with the shipped-locale plural rules documented inline. The
   normative list of stable codes (`error.*` / `validation.*` / `message.*`, with params + HTTP)
   is in SPEC §5 (Error & message codes).
+- **Additive:** three error codes — `error.chunk_count_mismatch` (declared `fileSize`/`totalChunks`
+  inconsistent, see §2), `error.hash_mismatch` (assembled file fails sha256 verification) and
+  `error.incomplete_upload` (a chunk is missing at assembly) — all 422, in every locale catalog.

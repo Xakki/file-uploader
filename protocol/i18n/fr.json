@@ -25,5 +25,8 @@
     "other": "{count} fichiers supprimés de la corbeille."
   },
   "message.not_found": "Fichier introuvable.",
-  "message.not_allow": "Opération non autorisée."
+  "message.not_allow": "Opération non autorisée.",
+  "error.chunk_count_mismatch": "Le nombre de fragments ne correspond pas à la taille du fichier.",
+  "error.hash_mismatch": "Le fichier téléversé a échoué à la vérification d’intégrité.",
+  "error.incomplete_upload": "Le téléversement est incomplet : certains fragments sont manquants."
 }

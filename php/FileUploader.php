@@ -45,6 +45,7 @@ class FileUploader
             }
         }
         $this->guardFile($payload->fileName(), $payload->mimeType(), $payload->fileSize(), $payload->detectedMimeType());
+        $this->guardChunkConsistency($payload);
 
         // Capacity guard runs only when a brand-new upload starts (its first
         // chunk). Resumed/continuing chunks (index > 0) belong to an upload that
@@ -103,7 +104,7 @@ class FileUploader
             for ($i = 0; $i < $payload->totalChunks(); $i++) {
                 $chunkPath = $temporaryDirectory.'/'.$i;
                 if (! $this->storage->exists($chunkPath)) {
-                    throw new LogicException("Missing chunk {$i} for {$payload->uploadId()}.");
+                    throw new AttentionException('error.incomplete_upload');
                 }
 
                 $stream = $this->storage->readStream($chunkPath);
@@ -135,7 +136,7 @@ class FileUploader
 
             $calculatedHash = hash_final($hashContext);
             if ($payload->fileHash() && ! hash_equals($payload->fileHash(), $calculatedHash)) {
-                throw new LogicException('File hash mismatch.');
+                throw new AttentionException('error.hash_mismatch');
             }
         } finally {
             fclose($resource);
@@ -258,6 +259,28 @@ class FileUploader
             }
 
             throw new AttentionException('error.mime_not_allowed_unknown');
+        }
+    }
+
+    /**
+     * Reject a malformed chunk request whose declared fileSize / totalChunks cannot be
+     * consistent for chunks of 1..chunkSize bytes (Upload Protocol §2). Skipped when
+     * chunkSize is unconfigured (a binding always sets it). Throws a coded 422 so every
+     * binding rejects it identically, instead of failing later during assembly.
+     */
+    protected function guardChunkConsistency(ChunkPayload $payload): void
+    {
+        $chunkSize = (int) ($this->config['chunk_size'] ?? 0);
+        $totalChunks = $payload->totalChunks();
+        $fileSize = $payload->fileSize();
+        if ($chunkSize < 1 || $totalChunks < 1 || $fileSize < 1) {
+            return;
+        }
+
+        // The file can't exceed totalChunks × chunkSize, and there can't be more
+        // (at-least-one-byte) chunks than there are bytes.
+        if ($fileSize > $totalChunks * $chunkSize || $totalChunks > $fileSize) {
+            throw new AttentionException('error.chunk_count_mismatch');
         }
     }
 

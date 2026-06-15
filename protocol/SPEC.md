@@ -52,6 +52,12 @@ client                                   server
 | `fileHash`         | string          | no       | ≤ 128; lowercase sha256 hex of the whole file           |
 | `locale`           | string          | no       | one of the server's configured locales (e.g. `en`,`ru`) |
 
+### Chunk-count consistency
+
+For chunks of `1..chunkSize` bytes, the declared `fileSize` and `totalChunks` MUST satisfy
+`fileSize ≤ totalChunks × chunkSize` **and** `totalChunks ≤ fileSize` (each chunk carries at
+least one byte). A request violating either is rejected with `error.chunk_count_mismatch` (422).
+
 ### `uploadId` format
 
 `upload-{epochMillis13}-{rand8}` where `epochMillis13` is a 13-digit millisecond timestamp
@@ -237,6 +243,9 @@ short description only.
 | `error.mime_not_allowed`        | `mime`       | 422 | MIME not in allow-list                   |
 | `error.mime_not_allowed_unknown`| —            | 422 | MIME could not be determined             |
 | `error.max_files_reached`       | —            | 422 | active-file cap reached                  |
+| `error.chunk_count_mismatch`    | —            | 422 | `fileSize`/`totalChunks` inconsistent (see §2) |
+| `error.hash_mismatch`           | —            | 422 | assembled file failed sha256 verification |
+| `error.incomplete_upload`       | —            | 422 | assembly found a missing chunk           |
 | `error.not_authorized_delete`   | —            | 403 | caller may not delete this file          |
 | `error.not_authorized_restore`  | —            | 403 | caller may not restore this file         |
 | `validation.field_required`     | `field`      | 422 | required field missing (errors map)      |

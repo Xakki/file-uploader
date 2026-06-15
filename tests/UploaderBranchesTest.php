@@ -6,13 +6,13 @@ namespace Xakki\FileUploader\Tests;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Xakki\FileUploader\Auth\NullUserResolver;
 use Xakki\FileUploader\Clock\SystemClock;
 use Xakki\FileUploader\Contracts\UserResolver;
 use Xakki\FileUploader\Dto\FileMetadata;
+use Xakki\FileUploader\Exception\AttentionException;
 use Xakki\FileUploader\FileManager;
 use Xakki\FileUploader\Storage\FlysystemStorage;
 use Xakki\FileUploader\Tests\Support\ArrayChunkPayload;
@@ -45,8 +45,26 @@ class UploaderBranchesTest extends TestCase
     {
         $manager = $this->manager();
 
-        $this->expectException(LogicException::class);
+        $this->expectException(AttentionException::class);
         $manager->handleChunk($this->chunk($this->uploadId(), 0, 1, 'abc', hash('sha256', 'WRONG'), 'abc'));
+    }
+
+    public function test_inconsistent_chunk_count_throws(): void
+    {
+        $manager = $this->manager(['chunk_size' => 1024 * 1024]);
+
+        // 5 chunks declared for a 3-byte file is impossible (each chunk carries >= 1 byte).
+        $this->expectException(AttentionException::class);
+        $manager->handleChunk($this->chunk($this->uploadId(), 0, 5, 'abc', '', 'a'));
+    }
+
+    public function test_missing_chunk_throws_incomplete_upload(): void
+    {
+        $manager = $this->manager();
+
+        // Send only the final chunk of a 2-chunk upload -> assembly finds chunk 0 missing.
+        $this->expectException(AttentionException::class);
+        $manager->handleChunk($this->chunk($this->uploadId(), 1, 2, 'abcd', '', 'cd'));
     }
 
     public function test_multi_chunk_upload_assembles_full_file(): void

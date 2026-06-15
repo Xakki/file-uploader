@@ -1,6 +1,6 @@
 * text=auto eol=lf
 
-# Keep the Composer dist lean: ship only src/, protocol/ (conformance fixtures
+# Keep the Composer dist lean: ship only php/, protocol/ (conformance fixtures
 # are read by bindings from vendor), composer.json, LICENSE and README.
 /tests              export-ignore
 /docs               export-ignore

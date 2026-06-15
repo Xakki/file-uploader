@@ -25,5 +25,8 @@
     "other": "Removed {count} files from trash."
   },
   "message.not_found": "File not found.",
-  "message.not_allow": "Operation not allowed."
+  "message.not_allow": "Operation not allowed.",
+  "error.chunk_count_mismatch": "The number of chunks is inconsistent with the file size.",
+  "error.hash_mismatch": "The uploaded file failed its integrity check.",
+  "error.incomplete_upload": "The upload is incomplete: some chunks are missing."
 }

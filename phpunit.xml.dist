@@ -10,6 +10,6 @@
         </testsuite>
     </testsuites>
     <source>
-        <include><directory>src</directory></include>
+        <include><directory>php</directory></include>
     </source>
 </phpunit>

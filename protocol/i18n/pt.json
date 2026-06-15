@@ -25,5 +25,8 @@
     "other": "{count} arquivos removidos da lixeira."
   },
   "message.not_found": "Arquivo não encontrado.",
-  "message.not_allow": "Operação não permitida."
+  "message.not_allow": "Operação não permitida.",
+  "error.chunk_count_mismatch": "O número de fragmentos não corresponde ao tamanho do arquivo.",
+  "error.hash_mismatch": "O arquivo enviado não passou na verificação de integridade.",
+  "error.incomplete_upload": "O envio está incompleto: faltam alguns fragmentos."
 }

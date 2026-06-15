@@ -5,7 +5,7 @@ description: "Universal chunked file uploader"
 
 exclude:
   - vendor/
-  - src/
+  - php/
   - tests/
   - go/
   - python/

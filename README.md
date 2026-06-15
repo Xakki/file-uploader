@@ -146,7 +146,7 @@ shows the guest-cookie variant end to end.
 
 ```
 file-uploader/                  ← this repo = xakki/file-uploader (core) + protocol + js
-├── src/         Xakki\FileUploader\   framework-agnostic PHP core
+├── php/         Xakki\FileUploader\   framework-agnostic PHP core
 ├── tests/       core test suite
 ├── protocol/    Upload Protocol v1 — SPEC.md, openapi.yaml, schemas/, fixtures/   ← source of truth
 ├── js/          @xakki/file-uploader  headless TS client + DOM widget (ESM/CJS/UMD)

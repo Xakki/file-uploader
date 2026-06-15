@@ -122,8 +122,11 @@ re-localize and let **cross-language conformance assert on `code`, not on prose*
 ```
 
 Touched protocol artifacts: `protocol/schemas/response-envelope.schema.json`,
-`protocol/openapi.yaml`, `protocol/fixtures/*` (error fixtures pin `code`, not the message
-text). `Protocol\ResponseFactory::success()/error()` gain `code`/`params` arguments.
+`protocol/openapi.yaml`, and `protocol/fixtures/*` — the **positive** fixtures pin the expected
+`code` (e.g. `message.upload_completed`); the existing **validation-error** fixtures keep
+asserting field *names*, because per-field error codes are deferred (the `errors` map stays
+`field → rendered string`; see SPEC §5.5). `Protocol\ResponseFactory::success()/error()` gain
+optional `code`/`params` arguments.
 
 ### 5. Core runtime + locale resolution
 
@@ -173,7 +176,8 @@ stable `code`s; the unused protocol `locale` field becomes meaningful.
 
 1. **protocol/**: add `i18n/<locale>.json` for the 8 widget locales (en, ru, es, pt, zh, fr, de, sr);
    SPEC §Errors (code table + placeholder +
-   plural rules); envelope schema + openapi + error fixtures gain `code`/`params`; CHANGELOG.
+   plural rules); envelope schema + openapi gain optional `code`/`params`; positive fixtures pin
+   `code`; CHANGELOG.
 2. **core (PHP)**: `Protocol\MessageCatalog` resolver; exceptions carry `code`+`params`;
    `guardFile()`/`ChunkValidator` refactor; `ResponseFactory` adds `code`/`params`; en strings
    verbatim; tests.

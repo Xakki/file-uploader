@@ -33,7 +33,7 @@ abstract class CodedUploadException extends UploadException
 
     /**
      * The stable message code (e.g. `error.max_files_reached`). Distinct from the
-     * inherited integer {@see \Throwable::getCode()}.
+     * inherited integer {@see Throwable::getCode()}.
      */
     public function code(): string
     {

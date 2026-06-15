@@ -1,0 +1,30 @@
+{
+  "name": "inconsistent-chunk-count",
+  "description": "totalChunks greater than fileSize (each chunk carries >= 1 byte) is rejected with 422.",
+  "file": {
+    "name": "note.txt",
+    "mime": "text/plain",
+    "sizeBytes": 2,
+    "lastModified": 1700000000000,
+    "fillByte": 65
+  },
+  "requests": [
+    {
+      "fields": {
+        "chunkIndex": 0,
+        "totalChunks": 3,
+        "fileSize": 2,
+        "uploadId": "upload-1700000000000-abcd1234",
+        "fileName": "note.txt",
+        "mimeType": "text/plain",
+        "fileLastModified": 1700000000000
+      },
+      "chunkBytes": 2,
+      "expect": {
+        "status": 422,
+        "success": false,
+        "code": "error.chunk_count_mismatch"
+      }
+    }
+  ]
+}

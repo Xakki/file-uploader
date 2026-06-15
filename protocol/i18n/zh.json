@@ -22,5 +22,8 @@
   "message.restored": "文件已恢复。",
   "message.cleanup_done": "已从回收站删除 {count} 个文件。",
   "message.not_found": "未找到文件。",
-  "message.not_allow": "操作不被允许。"
+  "message.not_allow": "操作不被允许。",
+  "error.chunk_count_mismatch": "分块数量与文件大小不一致。",
+  "error.hash_mismatch": "上传的文件未通过完整性校验。",
+  "error.incomplete_upload": "上传不完整：缺少部分分块。"
 }

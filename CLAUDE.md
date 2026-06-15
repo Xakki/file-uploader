@@ -7,7 +7,7 @@ read those, don't restate them here.
 
 ## Architecture map
 
-- **Repo root = `xakki/file-uploader` core** (`Xakki\FileUploader\`): `src/`, `tests/`, `composer.json`
+- **Repo root = `xakki/file-uploader` core** (`Xakki\FileUploader\`): `php/`, `tests/`, `composer.json`
   at the root. All upload logic lives here; bindings are thin adapters over its seams
   (Storage / UserResolver / Clock / Logger).
 - `protocol/` — **source of truth**: SPEC.md, OpenAPI, JSON Schemas, conformance `fixtures/`. Ships
@@ -42,7 +42,7 @@ for JS. Override with `PHP_IMAGE=` / `NODE_IMAGE=`.)
 - **This repo publishes `xakki/file-uploader` from the root** (Packagist GitHub hook on a `vX.Y.Z` tag);
   keep the `composer.json` `version` in sync with the release tag. Bindings are separate repos that
   consume the published core.
-- **Minimal duplication**: logic lives once in the core (`src/`, PHP) and `js/src/core` (TS); bindings
+- **Minimal duplication**: logic lives once in the core (`php/`, PHP) and `js/src/core` (TS); bindings
   only wire framework seams. The response envelope (`Protocol\ResponseFactory`) and chunk-field
   validation (`Protocol\ChunkValidator`) are shared in the core — don't reimplement protocol behaviour
   in a binding.

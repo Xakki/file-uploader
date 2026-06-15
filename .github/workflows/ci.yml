@@ -22,7 +22,7 @@ jobs:
         with:
           filters: |
             core:
-              - 'src/**'
+              - 'php/**'
               - 'tests/**'
               - 'composer.json'
               - 'phpunit.xml.dist'
@@ -34,7 +34,7 @@ jobs:
               - 'protocol/fixtures/**'
               - '.github/workflows/ci.yml'
             php:
-              - 'src/**'
+              - 'php/**'
               - 'tests/**'
               - 'pint.json'
               - '.github/workflows/ci.yml'
@@ -86,7 +86,7 @@ jobs:
           coverage: none
           tools: composer:v2
       - run: composer global require laravel/pint --no-progress
-      - run: "$(composer global config home)/vendor/bin/pint --test src tests"
+      - run: "$(composer global config home)/vendor/bin/pint --test php tests"
 
   js:
     needs: changes

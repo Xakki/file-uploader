@@ -25,5 +25,8 @@
     "other": "{count} Dateien aus dem Papierkorb entfernt."
   },
   "message.not_found": "Datei nicht gefunden.",
-  "message.not_allow": "Vorgang nicht zulässig."
+  "message.not_allow": "Vorgang nicht zulässig.",
+  "error.chunk_count_mismatch": "Die Anzahl der Abschnitte stimmt nicht mit der Dateigröße überein.",
+  "error.hash_mismatch": "Die hochgeladene Datei hat die Integritätsprüfung nicht bestanden.",
+  "error.incomplete_upload": "Der Upload ist unvollständig: Es fehlen einige Abschnitte."
 }

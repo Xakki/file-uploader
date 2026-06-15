@@ -47,6 +47,15 @@ class CodedExceptionTest extends TestCase
             'max_files_reached' => [
                 'error.max_files_reached', [], 'Maximum number of files reached.',
             ],
+            'chunk_count_mismatch' => [
+                'error.chunk_count_mismatch', [], 'The number of chunks is inconsistent with the file size.',
+            ],
+            'hash_mismatch' => [
+                'error.hash_mismatch', [], 'The uploaded file failed its integrity check.',
+            ],
+            'incomplete_upload' => [
+                'error.incomplete_upload', [], 'The upload is incomplete: some chunks are missing.',
+            ],
         ];
     }
 

@@ -13,7 +13,7 @@ DOCKER_PHP  = docker run --rm $(DOCKER_USER) -v "$(CURDIR)":/repo -e COMPOSER_HO
 DOCKER_NODE = docker run --rm $(DOCKER_USER) -v "$(CURDIR)":/repo -e npm_config_cache=/tmp/npm
 
 .DEFAULT_GOAL := help
-.PHONY: help install test test-core test-js coverage conformance phpstan pint pint-fix clean verify-binding
+.PHONY: help install check test test-core test-js coverage conformance phpstan pint pint-fix clean verify-binding
 
 ##@ Help
 help:  ## Display this help
@@ -25,6 +25,8 @@ install:  ## Install deps (core + js)
 	$(DOCKER_NODE) -w /repo/js $(NODE_IMAGE) sh -lc 'npm ci'
 
 ##@ Test
+check: test-core pint test-js  ## Full local gate — mirrors every CI job (php-core + pint + js)
+
 test: test-core test-js  ## Run the core + js suites
 
 test-core:  ## core (repo root): phpunit + phpstan
@@ -43,11 +45,11 @@ conformance:  ## Run the shared protocol/fixtures suite (js client; anti-drift g
 phpstan:  ## phpstan on the core
 	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer install -q --no-interaction && composer phpstan'
 
-pint:  ## Pint style check (src tests)
-	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer global require -q laravel/pint && $$(composer global config home)/vendor/bin/pint --test src tests'
+pint:  ## Pint style check (php tests)
+	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer global require -q laravel/pint && $$(composer global config home)/vendor/bin/pint --test php tests'
 
-pint-fix:  ## Pint auto-fix (src tests)
-	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer global require -q laravel/pint && $$(composer global config home)/vendor/bin/pint src tests'
+pint-fix:  ## Pint auto-fix (php tests)
+	$(DOCKER_PHP) -w /repo $(PHP_IMAGE) sh -lc 'composer global require -q laravel/pint && $$(composer global config home)/vendor/bin/pint php tests'
 
 ##@ Bindings
 verify-binding:  ## Smoke-test a sibling binding repo against this working-tree core (DIR=../file-uploader-laravel)

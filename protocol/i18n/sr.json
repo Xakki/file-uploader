@@ -26,5 +26,8 @@
     "other": "Uklonjeno {count} fajlova iz korpe."
   },
   "message.not_found": "Fajl nije pronađen.",
-  "message.not_allow": "Operacija nije dozvoljena."
+  "message.not_allow": "Operacija nije dozvoljena.",
+  "error.chunk_count_mismatch": "Broj delova ne odgovara veličini fajla.",
+  "error.hash_mismatch": "Otpremljeni fajl nije prošao proveru integriteta.",
+  "error.incomplete_upload": "Otpremanje je nepotpuno: nedostaju neki delovi fajla."
 }
